@@ -4,6 +4,10 @@
 #include <LiquidCrystal_I2C.h>
 #include "Logger.h"
 
+#define PIN_BUTTON 2
+
+volatile int button_state = 1;
+
 LiquidCrystal_I2C lcd1(0x27, 16, 2);
 LiquidCrystal_I2C lcd2(0x23, 16, 2);
 Display disp1(lcd1); // untuk input
@@ -22,8 +26,11 @@ typedef struct data_collect
 data_collect data_input;
 data_collect data_output;
 
+bool read_button_state(void);
+
 void setup()
 {
+  pinMode(PIN_BUTTON, INPUT_PULLUP);
   Serial.begin(115200);
   Serial.println(logger.init(10));
   data_input.current = (float)0.09;
@@ -36,16 +43,22 @@ void setup()
   delay(2000);
   disp1.first_message();
   disp2.first_message();
-  delay(2000);
+  
+  // waiting button state
+  while (button_state != 0)
+  {
+    button_state = read_button_state();
+  }
+
   disp1.second_message();
   disp2.second_message();
   delay(2000);
 
-  for (;;)
-  {
-    disp1.disp_custom("OUTPUT: ", String(voltage_sensor_dc.calculate()));
-    delay(250);
-  }
+  // for (;;)
+  // {
+  //   disp1.disp_custom("OUTPUT: ", String(voltage_sensor_dc.calculate()));
+  //   delay(250);
+  // }
 
   logger.log(data_input.volt, data_input.current, data_output.volt,
              data_output.current, "sensor.txt");
@@ -56,4 +69,11 @@ void setup()
 
 void loop()
 {
+}
+
+
+
+bool read_button_state(void)
+{
+  return digitalRead(PIN_BUTTON);
 }
