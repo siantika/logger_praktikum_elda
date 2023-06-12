@@ -16,9 +16,9 @@ void Display::init(void)
     this->lcd.init();
     this->lcd.backlight();
     this->lcd.setCursor(0, 0);
-    this->lcd.print("***---INIT---***");
+    this->lcd.print("** PRAKTIKUM **");
     this->lcd.setCursor(0, 1);
-    this->lcd.print("PRAK ELDAYA M.1");
+    this->lcd.print("  ELDA MODUL 1");
 }
 
 void Display::first_message(void)
@@ -26,4 +26,33 @@ void Display::first_message(void)
     clear();
     this->lcd.setCursor(0, 0);
     this->lcd.print(FIRST_MSG_ROW_0);
+    this->lcd.setCursor(0, 1);
+    this->lcd.print(FIRST_MSG_ROW_1);
+}
+
+void Display::second_message(void)
+{
+    clear();
+    this->lcd.setCursor(0, 0);
+    this->lcd.print(SECOND_MSG_ROW_0);
+    this->lcd.setCursor(0, 1);
+    this->lcd.print(SECOND_MSG_ROW_1);
+}
+
+void Display::disp_measurements(float &volt, float &current, bool pos)
+{
+    clear();
+    if (pos == 0)
+    {
+        this->lcd.setCursor(0, 0);
+        this->lcd.print(F("NILAI INPUT:"));
+    }
+    else
+    {
+        this->lcd.setCursor(0, 0);
+        this->lcd.print(F("NILAI OUTPUT:"));
+    }
+    this->lcd.setCursor(0, 1);
+    String msg_display = String(volt) + "V | " + String(current) + "A";
+    this->lcd.print(msg_display);
 }

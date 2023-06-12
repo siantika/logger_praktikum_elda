@@ -4,21 +4,24 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 
-const String FIRST_MSG_ROW_0 = "SILAKAN";
-#define FIRST_MSG_ROW_1 "MERANGKAI!"
+const String FIRST_MSG_ROW_0 = "** INSTRUKSI **";
+const String FIRST_MSG_ROW_1 = "  RANGKAILAH !";
 
-class Display{
-    private:
-        LiquidCrystal_I2C& lcd;
-        void clear(void);
-    
-    public:
-        Display(LiquidCrystal_I2C& lcd);
-        void init(void);
-        void first_message(void);
-        void second_message(void);
-        void disp_measurements(float* volt, float* current);
-        void custome_message(String msg);
+const String SECOND_MSG_ROW_0 = "** INFORMASI **";
+const String SECOND_MSG_ROW_1 = "   ALAT SIAP!";
+
+class Display
+{
+private:
+    LiquidCrystal_I2C &lcd;
+    void clear(void);
+
+public:
+    Display(LiquidCrystal_I2C &lcd);
+    void init(void);
+    void first_message(void);
+    void second_message(void);
+    void disp_measurements(float& volt, float& current, bool pos);
 };
 
 #endif
