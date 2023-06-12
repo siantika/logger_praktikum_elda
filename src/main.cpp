@@ -2,11 +2,14 @@
 #include "Display.h"
 
 #include <LiquidCrystal_I2C.h>
+#include "Logger.h"
 
 LiquidCrystal_I2C lcd1(0x27, 16, 2);
 LiquidCrystal_I2C lcd2 (0x23, 16, 2);
 Display disp1(lcd1); // untuk input
 Display disp2(lcd2); // untuk output
+
+Logger logger;
 
 
 typedef struct data_collect
@@ -20,6 +23,8 @@ data_collect data_output;
 
 void setup()
 {
+  Serial.begin(115200);
+  Serial.println(logger.init(10));
   data_input.current = (float) 0.09;
   data_input.volt = (float) 220.3;
   data_output.current = (float) 1.89;
@@ -33,6 +38,9 @@ void setup()
   delay(2000);
   disp1.second_message();
   disp2.second_message();
+  delay(2000);
+  logger.log(data_input.volt, data_input.current, data_output.volt, \
+       data_output.current, "sensor.txt");
   delay(2000);
   disp1.disp_measurements(data_input.volt, data_input.current, 0);
   disp2.disp_measurements(data_output.volt, data_output.current, 1);
