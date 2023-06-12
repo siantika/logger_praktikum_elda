@@ -56,3 +56,12 @@ void Display::disp_measurements(float &volt, float &current, bool pos)
     String msg_display = String(volt) + "V | " + String(current) + "A";
     this->lcd.print(msg_display);
 }
+
+void Display::disp_custom(String msg_row_0, String msg_row_1)
+{
+    this->lcd.clear();
+    this->lcd.setCursor(0,0);
+    this->lcd.print(msg_row_0);
+    this->lcd.setCursor(0,1);
+    this->lcd.print(msg_row_1);
+}

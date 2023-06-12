@@ -22,6 +22,7 @@ public:
     void first_message(void);
     void second_message(void);
     void disp_measurements(float& volt, float& current, bool pos);
+    void disp_custom(String msg_row_0, String msg_row_1);
 };
 
 #endif
