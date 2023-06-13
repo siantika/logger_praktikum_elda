@@ -14,7 +14,6 @@ Display disp1(lcd1); // untuk input
 Display disp2(lcd2); // untuk output
 
 Logger logger;
-
 VoltageSensorDc voltage_sensor_dc(A7);
 
 typedef struct data_collect
@@ -26,6 +25,7 @@ typedef struct data_collect
 data_collect data_input;
 data_collect data_output;
 
+// Forward declarations
 bool read_button_state(void);
 
 void setup()
@@ -52,7 +52,21 @@ void setup()
 
   disp1.second_message();
   disp2.second_message();
-  delay(2000);
+
+  delay(500);
+
+    // waiting button state
+    button_state = 1; // reset to untouch
+  while (button_state != 0)
+  {
+    button_state = read_button_state();
+  }
+
+  disp1.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
+  disp2.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
+
+  delay(3000);
+
 
   // for (;;)
   // {
@@ -65,14 +79,15 @@ void setup()
   delay(2000);
   disp1.disp_measurements(data_input.volt, data_input.current, 0);
   disp2.disp_measurements(data_output.volt, data_output.current, 1);
+
 }
 
 void loop()
 {
+  // pass
 }
 
-
-
+// Functions  
 bool read_button_state(void)
 {
   return digitalRead(PIN_BUTTON);
