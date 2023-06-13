@@ -26,6 +26,8 @@ data_collect data_output;
 
 // Forward functions declarations
 bool read_button_state(void);
+void no_sd_card_handle(Display &disp1, Display &disp2);
+void log_failed_handle(Display &disp1, Display &disp2);
 
 void setup()
 {
@@ -33,8 +35,14 @@ void setup()
   Serial.begin(115200);
   disp1.init();
   disp2.init();
-  delay(2000);
 
+  bool status_sd_card = logger.init(10);
+  // error handling for sd card
+  if (status_sd_card == 1)
+    no_sd_card_handle(disp1, disp2);
+
+
+  delay(2000);
   disp1.first_message();
   disp2.first_message();
 
@@ -47,7 +55,6 @@ void setup()
   // Tell users that the device is ready
   disp1.second_message();
   disp2.second_message();
-  delay(500);
 
   // Waiting users to touch the button for confirmation.
   button_state = 1;
@@ -81,8 +88,11 @@ void setup()
   delete output_voltage_sensor;
 
   // Log captured data once to SD card.
-  bool status = logger.log(data_input.volt, data_input.current, data_output.volt,
-                           data_output.current, "sensor.txt");
+  bool status_log = logger.log(data_input.volt, data_input.current, data_output.volt,
+                               data_output.current, "sensor.txt");
+  // error handling
+  if (status_log == 1)
+    log_failed_handle(disp1, disp2);
 
   // Display captured data on LCDs
   disp1.disp_measurements(data_input.volt, data_input.current, 0);
@@ -99,4 +109,20 @@ void loop()
 bool read_button_state(void)
 {
   return digitalRead(PIN_BUTTON);
+}
+
+void no_sd_card_handle(Display &disp1, Display &disp2)
+{
+  disp1.disp_custom(F("**   ERROR   **"), F("  NO SD CARD !"));
+  disp2.disp_custom(F("**   ERROR   **"), F("  NO SD CARD !"));
+  for (;;)
+    ; // stuck forever
+}
+
+void log_failed_handle(Display &disp1, Display &disp2)
+{
+  disp1.disp_custom(F("**   ERROR   **"), F("  SD CARD FAIL !"));
+  disp2.disp_custom(F("**   ERROR   **"), F("  SD CARD FAIL !"));
+  for (;;)
+    ; // stuck forever
 }
