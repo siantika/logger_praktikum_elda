@@ -13,8 +13,9 @@ private:
 
 public:
     uint8_t init(uint8_t pin_cs);
-    void log(float &voltage_in, float &current_in, \
-            float& voltage_out, float& current_out, String file_name);
+    bool log(float &voltage_in, float &current_in,
+             float &voltage_out, float &current_out, 
+             String file_name);
 };
 
 #endif

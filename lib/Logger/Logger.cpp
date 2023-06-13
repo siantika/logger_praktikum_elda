@@ -21,18 +21,20 @@ uint8_t Logger::init(uint8_t pin_cs)
     return opt;
 }
 
-void Logger::log(float &voltage_in, float &current_in,
+bool Logger::log(float &voltage_in, float &current_in,
                  float &voltage_out, float &current_out, String file_name)
 {
+    bool opt_success = 0;
+
     File dataFile = SD.open(file_name, FILE_WRITE);
     if (dataFile)
     {
-        dataFile.print("DATE,\t");
-        dataFile.print("TIME,\t");
-        dataFile.print("VOLTAGE IN(V),\t");
-        dataFile.print("CURRENT IN(A),\t");
-        dataFile.print("VOLTAGE OUT(V),\t");
-        dataFile.println("CURRENT OUT(A),\t");
+        dataFile.print(F("DATE,\t"));
+        dataFile.print(F("TIME,\t"));
+        dataFile.print(F("VOLTAGE IN(V),\t"));
+        dataFile.print(F("CURRENT IN(A),\t"));
+        dataFile.print(F("VOLTAGE OUT(V),\t"));
+        dataFile.println(F("CURRENT OUT(A),\t"));
         dataFile.print(get_date());
         dataFile.print(",\t");
         dataFile.print(get_time());
@@ -45,9 +47,12 @@ void Logger::log(float &voltage_in, float &current_in,
         dataFile.print(",\t");
         dataFile.println(String(current_out));
         dataFile.close();
+
+        opt_success = 0;
     }
     else
     {
-        Serial.println("error opening datalog.txt");
+        opt_success = 1;// error occured
     }
+    return opt_success;
 }
