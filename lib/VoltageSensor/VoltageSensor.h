@@ -14,6 +14,7 @@ protected:
 public:
     VoltageSensor(uint8_t pin);
     virtual float calculate(void) = 0;
+    virtual ~VoltageSensor();
 };
 
 class VoltageSensorAc : VoltageSensor
@@ -32,6 +33,7 @@ private:
 public:
     VoltageSensorAc(uint8_t pin);
     float calculate(void) override;
+
 };
 
 class VoltageSensorDc : VoltageSensor
