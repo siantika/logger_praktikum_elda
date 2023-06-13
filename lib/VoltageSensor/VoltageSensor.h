@@ -1,9 +1,10 @@
 #ifndef VOLTAGE_SENSOR_H
 #define VOLTAGE_SENSOR_H
+#include <Arduino.h>
 
 #define CORRECTION_FACTOR 21.0
-
-#include <Arduino.h>
+#define MAX_ITER 100
+#define ZERO_POINT_ADC 511
 
 class VoltageSensor
 {
@@ -17,6 +18,17 @@ public:
 
 class VoltageSensorAc : VoltageSensor
 {
+private:
+    int _max_val;
+    int _read_adc;
+    int _temp_data[MAX_ITER];
+    float v_max_adc;
+    float v_eff_adc;
+    float v_eff;
+    int _read_analog();
+    void _filter_peek_adc(int *array_adc, int array_size);
+    int _find_max_adc(int *array_adc, int array_size);
+
 public:
     VoltageSensorAc(uint8_t pin);
     float calculate(void) override;

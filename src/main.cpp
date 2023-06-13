@@ -15,6 +15,7 @@ Display disp2(lcd2); // untuk output
 
 Logger logger;
 VoltageSensorDc voltage_sensor_dc(A7);
+VoltageSensorAc input_voltage_sensor(A3);
 
 typedef struct data_collect
 {
@@ -37,6 +38,13 @@ void setup()
   data_input.volt = (float)220.3;
   data_output.current = (float)1.89;
   data_output.volt = (float)112.3;
+
+  while(1)
+  {
+    float v_eff = input_voltage_sensor.calculate();
+    Serial.println(v_eff);
+    delay(500);
+  }
 
   disp1.init();
   disp2.init();
