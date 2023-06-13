@@ -36,7 +36,7 @@ bool Logger::log(float &voltage_in, float &current_in,
         dataFile.print(F("VOLTAGE IN(V),\t"));
         dataFile.print(F("CURRENT IN(A),\t"));
         dataFile.print(F("VOLTAGE OUT(V),\t"));
-        dataFile.println(F("CURRENT OUT(A),\t"));
+        dataFile.println(F("CURRENT OUT(A),"));
         dataFile.print(get_date());
         dataFile.print(",\t");
         dataFile.print(get_time());
