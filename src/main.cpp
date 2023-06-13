@@ -14,8 +14,6 @@ Display disp1(lcd1); // untuk input
 Display disp2(lcd2); // untuk output
 
 Logger logger;
-VoltageSensorDc voltage_sensor_dc(A7);
-VoltageSensorAc input_voltage_sensor(A3);
 
 typedef struct data_collect
 {
@@ -34,24 +32,14 @@ void setup()
   pinMode(PIN_BUTTON, INPUT_PULLUP);
   Serial.begin(115200);
   Serial.println(logger.init(10));
-  data_input.current = (float)0.09;
-  data_input.volt = (float)220.3;
-  data_output.current = (float)1.89;
-  data_output.volt = (float)112.3;
-
-  while(1)
-  {
-    float v_eff = input_voltage_sensor.calculate();
-    Serial.println(v_eff);
-    delay(500);
-  }
-
   disp1.init();
   disp2.init();
   delay(2000);
   disp1.first_message();
   disp2.first_message();
-  
+
+  VoltageSensorAc *input_voltage_sensor = new VoltageSensorAc(A3);
+  VoltageSensorDc *output_voltage_sensor = new VoltageSensorDc((A7));
   // waiting button state
   while (button_state != 0)
   {
@@ -63,8 +51,8 @@ void setup()
 
   delay(500);
 
-    // waiting button state
-    button_state = 1; // reset to untouch
+  // waiting button state
+  button_state = 1; // reset to untouch
   while (button_state != 0)
   {
     button_state = read_button_state();
@@ -73,21 +61,19 @@ void setup()
   disp1.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
   disp2.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
 
-  delay(3000);
+  data_input.volt = input_voltage_sensor->calculate();
+  data_output.volt = output_voltage_sensor->calculate();
+  data_input.current = 0;
+  data_output.current = 1.2;
 
+  delete input_voltage_sensor;
+  delete output_voltage_sensor;
 
-  // for (;;)
-  // {
-  //   disp1.disp_custom("OUTPUT: ", String(voltage_sensor_dc.calculate()));
-  //   delay(250);
-  // }
-
-  logger.log(data_input.volt, data_input.current, data_output.volt,
-             data_output.current, "sensor.txt");
-  delay(2000);
+  bool status = logger.log(data_input.volt, data_input.current, data_output.volt,
+                           data_output.current, "sensor.txt");
+  Serial.println(status);
   disp1.disp_measurements(data_input.volt, data_input.current, 0);
   disp2.disp_measurements(data_output.volt, data_output.current, 1);
-
 }
 
 void loop()
@@ -95,7 +81,7 @@ void loop()
   // pass
 }
 
-// Functions  
+// Functions
 bool read_button_state(void)
 {
   return digitalRead(PIN_BUTTON);
