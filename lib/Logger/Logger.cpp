@@ -17,6 +17,8 @@ String Logger::get_time()
 
 uint8_t Logger::init(uint8_t pin_cs)
 {
+    // returns 
+    // operation status (bool) : 0 = Works || 1 = Error
     uint8_t opt = !SD.begin(pin_cs);
     return opt;
 }
