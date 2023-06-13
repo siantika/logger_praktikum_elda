@@ -1,33 +1,4 @@
-#include <Arduino.h>
-#include "Display.h"
-#include "VoltageSensor.h"
-#include <LiquidCrystal_I2C.h>
-#include "Logger.h"
-#include "CurrentSensor.h"
-
-#define PIN_BUTTON 2
-
-volatile bool button_state = 1;
-
-LiquidCrystal_I2C lcd1(0x27, 16, 2);
-LiquidCrystal_I2C lcd2(0x23, 16, 2);
-Display disp1(lcd1); // untuk input
-Display disp2(lcd2); // untuk output
-Logger logger;
-
-typedef struct data_collect
-{
-  float volt;
-  float current;
-} data_collect;
-
-data_collect data_input;
-data_collect data_output;
-
-// Forward functions declarations
-bool read_button_state(void);
-void no_sd_card_handle(Display &disp1, Display &disp2);
-void log_failed_handle(Display &disp1, Display &disp2);
+#include "header.h"
 
 void setup()
 {
@@ -35,14 +6,25 @@ void setup()
   Serial.begin(115200);
   disp1.init();
   disp2.init();
+  // Make init message visible
+  delay(2000);
 
+  // SD Card handling. The problems occures in hardware frequently
+  // (wires are not installed properly, insufficinet power to sensor)
   bool status_sd_card = logger.init(10);
-  // error handling for sd card
   if (status_sd_card == 1)
     no_sd_card_handle(disp1, disp2);
 
+  // Alocate objects dynamically
+  VoltageSensorAc *input_voltage_sensor = new VoltageSensorAc(PIN_INPUT_VOLTAGE_SENSOR);
+  VoltageSensorDc *output_voltage_sensor = new VoltageSensorDc(PIN_OUTPUT_VOLTAGE_SENSOR);
+  CurrentSensorDc *output_current_sensor = new CurrentSensorDc(PIN_OUTPUT_CURRENT_SENSOR);
+  CurrentSensorAc *input_current_sensor = new CurrentSensorAc(PIN_INPUT_CURRENT_SENSOR);
 
-  delay(2000);
+  // Calibrate current-sensors (To get nice values)
+  input_current_sensor->calibrate();
+  output_current_sensor->calibrate();
+
   disp1.first_message();
   disp2.first_message();
 
@@ -55,6 +37,8 @@ void setup()
   // Tell users that the device is ready
   disp1.second_message();
   disp2.second_message();
+  // Make those displays visible
+  delay(500);
 
   // Waiting users to touch the button for confirmation.
   button_state = 1;
@@ -65,15 +49,6 @@ void setup()
 
   disp1.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
   disp2.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
-
-  VoltageSensorAc *input_voltage_sensor = new VoltageSensorAc(A3);
-  VoltageSensorDc *output_voltage_sensor = new VoltageSensorDc((A7));
-  CurrentSensorDc *output_current_sensor = new CurrentSensorDc(A1);
-  CurrentSensorAc *input_current_sensor = new CurrentSensorAc(A0);
-
-  // Calibrate current-sensors (To get nice values)
-  input_current_sensor->calibrate();
-  output_current_sensor->calibrate();
 
   // Capture data from sensors
   data_input.current = input_current_sensor->calculate();
@@ -90,7 +65,7 @@ void setup()
   // Log captured data once to SD card.
   bool status_log = logger.log(data_input.volt, data_input.current, data_output.volt,
                                data_output.current, "sensor.txt");
-  // error handling
+  // Error handling for logger process
   if (status_log == 1)
     log_failed_handle(disp1, disp2);
 
