@@ -21,10 +21,6 @@ void setup()
   CurrentSensorDc *output_current_sensor = new CurrentSensorDc(PIN_OUTPUT_CURRENT_SENSOR);
   CurrentSensorAc *input_current_sensor = new CurrentSensorAc(PIN_INPUT_CURRENT_SENSOR);
 
-  // Calibrate current-sensors (To get nice values)
-  input_current_sensor->calibrate();
-  output_current_sensor->calibrate();
-
   disp1.first_message();
   disp2.first_message();
 
@@ -33,6 +29,10 @@ void setup()
   {
     button_state = read_button_state();
   }
+
+  // Calibrate current-sensors (To get nice values)
+  input_current_sensor->calibrate();
+  output_current_sensor->calibrate();
 
   // Tell users that the device is ready
   disp1.second_message();
@@ -51,7 +51,7 @@ void setup()
   disp2.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
 
   // Capture data from sensors
-  data_input.current = input_current_sensor->calculate();
+  data_input.current = input_current_sensor->calculate() - CALIBRATED_CONST;
   data_input.volt = input_voltage_sensor->calculate();
   data_output.volt = output_voltage_sensor->calculate();
   data_output.current = output_current_sensor->calculate();
