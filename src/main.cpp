@@ -11,7 +11,7 @@ void setup()
 
   // SD Card handling. The problems occures in hardware frequently
   // (wires are not installed properly, insufficinet power to sensor)
-  bool status_sd_card = logger.init(10);
+  bool status_sd_card = logger.init(PIN_CS_DATA_LOGGER);
   if (status_sd_card == 1)
     no_sd_card_handle(disp1, disp2);
 

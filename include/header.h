@@ -17,6 +17,7 @@
 #define PIN_INPUT_CURRENT_SENSOR A0
 #define PIN_OUTPUT_VOLTAGE_SENSOR A7
 #define PIN_OUTPUT_CURRENT_SENSOR A1
+#define PIN_CS_DATA_LOGGER 10
 
 /* Variables*/
 volatile bool button_state = 1;
