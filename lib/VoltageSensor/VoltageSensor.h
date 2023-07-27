@@ -2,9 +2,11 @@
 #define VOLTAGE_SENSOR_H
 #include <Arduino.h>
 
-#define CORRECTION_FACTOR 21.0
+#define CORRECTION_FACTOR 0.0
 #define MAX_ITER 100
 #define ZERO_POINT_ADC 511
+#define BOTTOM_THRESHOLD_DC_SENSOR 10
+#define BOTTOM_THRESHOLD_AC_SENSOR 100
 
 class VoltageSensor
 {
@@ -33,7 +35,6 @@ private:
 public:
     VoltageSensorAc(uint8_t pin);
     float calculate(void) override;
-
 };
 
 class VoltageSensorDc : VoltageSensor

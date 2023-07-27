@@ -5,10 +5,9 @@ VoltageSensor::VoltageSensor(uint8_t pin)
     this->_pin = pin;
 }
 
-//destructor
+// destructor
 VoltageSensor::~VoltageSensor()
 {
-
 }
 
 /* Derived class*/
@@ -17,7 +16,6 @@ VoltageSensorAc::VoltageSensorAc(uint8_t pin) : VoltageSensor(pin)
 {
     // pass
 }
-
 
 // Private methods
 int VoltageSensorAc::_read_analog()
@@ -72,7 +70,7 @@ float VoltageSensorAc::calculate(void)
     {
         v_eff = 0;
     }
-    return v_eff;
+    return (v_eff < BOTTOM_THRESHOLD_AC_SENSOR ? 0 : v_eff);
 }
 
 // Class voltage sensor DC
@@ -85,5 +83,6 @@ float VoltageSensorDc::calculate(void)
 {
     int read_adc = analogRead(this->_pin);
     float high_voltage = ((0.0048 * read_adc + 0.08) * 1 / 0.0123) - CORRECTION_FACTOR;
-    return high_voltage;
+    /* Filter negative value */
+    return (high_voltage < BOTTOM_THRESHOLD_DC_SENSOR ? 0 : high_voltage);
 }
