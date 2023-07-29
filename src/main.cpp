@@ -1,3 +1,18 @@
+/*
+ * main.cpp or driver code.
+ * Created by: I Putu Pawesi Siantika, S.T.
+ * This file is intended for specifying the behaviour of 
+ * bussines logic of device.
+ * 
+ * It logs the voltages and currents (DC and AC) reading to
+ * sd card.
+ * 
+ * NOTE: Implements in Kerja Praktik Junantara
+ *       in Teknik Elektro Udayana
+
+*/
+
+
 #include "header.h"
 
 void setup()
@@ -6,11 +21,11 @@ void setup()
   Serial.begin(115200);
   disp1.init();
   disp2.init();
-  // Make init message visible
+  // Make init message visible in display hardwares
   delay(2000);
 
-  // SD Card handling. The problems occures in hardware frequently
-  // (wires are not installed properly, insufficinet power to sensor)
+  // SD Card handling. The problems occurs in hardware frequently
+  // (wires are not installed properly, insufficient power supply to sensor)
   bool status_sd_card = logger.init(PIN_CS_DATA_LOGGER);
   if (status_sd_card == 1)
     no_sd_card_handle(disp1, disp2);
@@ -21,26 +36,30 @@ void setup()
   CurrentSensorDc *output_current_sensor = new CurrentSensorDc(PIN_OUTPUT_CURRENT_SENSOR);
   CurrentSensorAc *input_current_sensor = new CurrentSensorAc(PIN_INPUT_CURRENT_SENSOR);
 
+  // Show the first messages on display hardwares
   disp1.first_message();
   disp2.first_message();
 
-  // Wait users to finish the circuit.
+  // Wait users to finish the circuit and push the push button
   while (button_state != 0)
   {
     button_state = read_button_state();
   }
 
-  // Calibrate current-sensors (To get nice values)
+  // Calibrate the current-sensors 
+  // ( for increasing the precission of current values)
   input_current_sensor->calibrate();
   output_current_sensor->calibrate();
 
-  // Tell users that the device is ready
+  // Tell users that the device is ready by sending message
+  // on dislpay hardwares
   disp1.second_message();
   disp2.second_message();
+
   // Make those displays visible
   delay(500);
 
-  // Waiting users to touch the button for confirmation.
+  // Waiting users to push the button for capture-data confirmation.
   button_state = 1;
   while (button_state != 0)
   {
@@ -72,6 +91,8 @@ void setup()
   // Display captured data on LCDs
   disp1.disp_measurements(data_input.volt, data_input.current, 0);
   disp2.disp_measurements(data_output.volt, data_output.current, 1);
+
+  // stuck here
 }
 
 void loop()
@@ -79,7 +100,11 @@ void loop()
   // pass
 }
 
-/* Functions*/
+/* Functions implementations 
+   The implementations of functions declared in 'header.h'
+  
+*/
+
 
 bool read_button_state(void)
 {
@@ -101,3 +126,5 @@ void log_failed_handle(Display &disp1, Display &disp2)
   for (;;)
     ; // stuck forever
 }
+
+/* EOF */
