@@ -2,7 +2,7 @@
 #define VOLTAGE_SENSOR_H
 #include <Arduino.h>
 
-#define CORRECTION_FACTOR 21.0
+#define CORRECTION_FACTOR 0.0
 #define MAX_ITER 100
 #define ZERO_POINT_ADC 511
 

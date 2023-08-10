@@ -72,6 +72,12 @@ float VoltageSensorAc::calculate(void)
     {
         v_eff = 0;
     }
+
+    // Add filter 
+    // Karena tegangan pasti 220 V, jadi di bawah itu bisa kita anggap 0 V.
+    if (v_eff < 100)
+        v_eff = 0;
+    
     return v_eff;
 }
 
