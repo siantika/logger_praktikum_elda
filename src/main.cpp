@@ -1,17 +1,16 @@
 /*
  * main.cpp or driver code.
  * Created by: I Putu Pawesi Siantika, S.T.
- * This file is intended for specifying the behaviour of 
+ * This file is intended for specifying the behaviour of
  * bussines logic of device.
- * 
+ *
  * It logs the voltages and currents (DC and AC) reading to
  * sd card.
- * 
+ *
  * NOTE: Implements in Kerja Praktik Junantara
  *       in Teknik Elektro Udayana
 
 */
-
 
 #include "header.h"
 
@@ -20,7 +19,7 @@ void setup()
   pinMode(PIN_BUTTON, INPUT_PULLUP);
   Serial.begin(115200);
   // For debug mode
-  pinMode(PIN_DEBUG, INPUT_PULLUP); 
+  pinMode(PIN_DEBUG, INPUT_PULLUP);
   disp1.init();
   disp2.init();
   // Make init message visible in display hardwares
@@ -29,9 +28,14 @@ void setup()
   // Debug mode trigger
   // due to pullup, logic LOW means debug mode is active.
   debug_mode_state = digitalRead(PIN_DEBUG);
-  if (~debug_mode_state)
+  if (!debug_mode_state)
   {
     disp1.disp_custom(F("DEBUG MODE:"), F("ACTIVATED"));
+    delay(2000);
+  }
+  else
+  {
+    disp1.disp_custom(F("DEBUG MODE:"), F("DEACTIVATED"));
     delay(2000);
   }
   // SD Card handling. The problems occurs in hardware frequently
@@ -56,7 +60,7 @@ void setup()
     button_state = read_button_state();
   }
 
-  // Calibrate the current-sensors 
+  // Calibrate the current-sensors
   // ( for increasing the precission of current values)
   input_current_sensor->calibrate();
   output_current_sensor->calibrate();
@@ -85,23 +89,24 @@ void setup()
   data_output.volt = output_voltage_sensor->calculate();
   data_output.current = output_current_sensor->calculate();
 
- // Debug mode
- if (~debug_mode_state){
-  for(;;){
+  // Debug mode
+  if (!debug_mode_state)
+  {
+    for (;;)
+    {
       // Capture data from sensors
-  data_input.current = input_current_sensor->calculate() - CALIBRATED_CONST;
-  data_input.volt = input_voltage_sensor->calculate();
-  data_output.volt = output_voltage_sensor->calculate();
-  data_output.current = output_current_sensor->calculate();
+      data_input.current = input_current_sensor->calculate() - CALIBRATED_CONST;
+      data_input.volt = input_voltage_sensor->calculate();
+      data_output.volt = output_voltage_sensor->calculate();
+      data_output.current = output_current_sensor->calculate();
 
-  // Display to LCDs periodically
-  disp1.disp_measurements(data_input.volt, data_input.current, 0, true);
-  disp2.disp_measurements(data_output.volt, data_output.current, 1), true;
+      // Display to LCDs periodically
+      disp1.disp_measurements(data_input.volt, data_input.current, 0, true);
+      disp2.disp_measurements(data_output.volt, data_output.current, 1, true);
 
-  delay(500);
-
+      delay(500);
+    }
   }
- }
   // Dealocate memory used by objetcs
   delete input_current_sensor;
   delete output_current_sensor;
@@ -127,11 +132,10 @@ void loop()
   // pass
 }
 
-/* Functions implementations 
+/* Functions implementations
    The implementations of functions declared in 'header.h'
-  
-*/
 
+*/
 
 bool read_button_state(void)
 {
