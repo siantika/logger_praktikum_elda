@@ -18,8 +18,10 @@
 #define PIN_OUTPUT_VOLTAGE_SENSOR A2
 #define PIN_OUTPUT_CURRENT_SENSOR A6
 #define PIN_CS_DATA_LOGGER 10
+#define PIN_DEBUG 7
 
 /* Variables*/
+bool debug_mode_state; 
 volatile bool button_state = 1;
 typedef struct data_collect
 {
