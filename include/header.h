@@ -9,7 +9,7 @@
 #include "Logger.h"
 #include "CurrentSensor.h"
 
-#define CALIBRATED_CONST 0.05 // AC current only (input sensor)
+#define CALIBRATED_CONST 0.00 // AC current only (input sensor)
 
 /* Pins definition*/
 #define PIN_BUTTON 2
@@ -17,9 +17,15 @@
 #define PIN_INPUT_CURRENT_SENSOR A1
 #define PIN_OUTPUT_VOLTAGE_SENSOR A2
 #define PIN_OUTPUT_CURRENT_SENSOR A6
+#define PIN_INPUT_VOLTAGE_SENSOR A0
+#define PIN_INPUT_CURRENT_SENSOR A1
+#define PIN_OUTPUT_VOLTAGE_SENSOR A2
+#define PIN_OUTPUT_CURRENT_SENSOR A6
 #define PIN_CS_DATA_LOGGER 10
+#define PIN_DEBUG 7
 
 /* Variables*/
+bool debug_mode_state;
 volatile bool button_state = 1;
 typedef struct data_collect
 {

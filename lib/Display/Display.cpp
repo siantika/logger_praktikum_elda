@@ -39,18 +39,20 @@ void Display::second_message(void)
     this->lcd.print(SECOND_MSG_ROW_1);
 }
 
-void Display::disp_measurements(float &volt, float &current, bool pos)
+void Display::disp_measurements(float &volt, float &current, bool pos, bool debug_mode = false)
 {
     clear();
     if (pos == 0)
     {
         this->lcd.setCursor(0, 0);
-        this->lcd.print(F("NILAI INPUT:"));
+        if (debug_mode) {this->lcd.print(F("DEBUG INPUT:"));}
+        else {this->lcd.print(F("NILAI INPUT:"));}
     }
     else
     {
         this->lcd.setCursor(0, 0);
-        this->lcd.print(F("NILAI OUTPUT:"));
+        if (debug_mode) {this->lcd.print(F("DEBUG OUTPUT:"));}
+        else {this->lcd.print(F("NILAI OUTPUT:"));}
     }
     this->lcd.setCursor(0, 1);
     String msg_display = String(volt) + "V | " + String(current) + "A";
