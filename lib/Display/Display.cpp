@@ -45,25 +45,39 @@ void Display::disp_measurements(float &volt, float &current, bool pos, bool debu
     if (pos == 0)
     {
         this->lcd.setCursor(0, 0);
-        if (debug_mode) {this->lcd.print(F("DEBUG INPUT:"));}
-        else {this->lcd.print(F("NILAI INPUT:"));}
+        if (debug_mode)
+        {
+            this->lcd.print(F("DEBUG INPUT:"));
+        }
+        else
+        {
+            this->lcd.print(F("NILAI INPUT:"));
+        }
     }
     else
     {
         this->lcd.setCursor(0, 0);
-        if (debug_mode) {this->lcd.print(F("DEBUG OUTPUT:"));}
-        else {this->lcd.print(F("NILAI OUTPUT:"));}
+        if (debug_mode)
+        {
+            this->lcd.print(F("DEBUG OUTPUT:"));
+        }
+        else
+        {
+            this->lcd.print(F("NILAI OUTPUT:"));
+        }
     }
+
     this->lcd.setCursor(0, 1);
-    String msg_display = String(volt) + "V | " + String(current) + "A";
-    this->lcd.print(msg_display);
+    /* Should put like this due to RAM constraint, otherwise it truncates the display!*/
+    this->lcd.print(String(volt) + "V | ");
+    this->lcd.print(String(current) + "A");
 }
 
 void Display::disp_custom(String msg_row_0, String msg_row_1)
 {
     this->lcd.clear();
-    this->lcd.setCursor(0,0);
+    this->lcd.setCursor(0, 0);
     this->lcd.print(msg_row_0);
-    this->lcd.setCursor(0,1);
+    this->lcd.setCursor(0, 1);
     this->lcd.print(msg_row_1);
 }
