@@ -60,11 +60,6 @@ void setup()
     button_state = read_button_state();
   }
 
-  // Calibrate the current-sensors
-  // ( for increasing the precission of current values)
-  // input_current_sensor->calibrate();
-  // output_current_sensor->calibrate();
-
   // Tell users that the device is ready by sending message
   // on dislpay hardwares
   disp1.second_message();
@@ -113,6 +108,11 @@ void setup()
   delete output_current_sensor;
   delete input_voltage_sensor;
   delete output_voltage_sensor;
+
+  // Display logging process
+  disp1.disp_custom(F("**   INFO   **"), F(" LOGGING ... "));
+  disp2.disp_custom(F("**   INFO   **"), F("  ...  "));
+  delay(800);
 
   // Log captured data once to SD card.
   bool status_log = logger.log(data_input.volt, data_input.current, data_output.volt,
