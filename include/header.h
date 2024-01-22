@@ -1,14 +1,13 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-/* Librarys*/
+/* Libraries*/
 #include <Arduino.h>
 #include "Display.h"
 #include "VoltageSensor.h"
+#include "CurrentSensor.h"
 #include <LiquidCrystal_I2C.h>
 #include "Logger.h"
-
-#define CALIBRATED_CONST 0.135 //  current only (input sensor)
 
 /* Pins definition*/
 #define PIN_BUTTON 2

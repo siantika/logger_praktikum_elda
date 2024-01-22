@@ -13,28 +13,11 @@
 */
 
 #include "header.h"
-#include "ACS712.h"
-
-// Current
-ACS712 input_current_sensor(PIN_INPUT_CURRENT_SENSOR, 5.0, 1023, 185);
-
-float get_current()
-{
-  float average = 0;
-  //  uint32_t start = millis();
-  for (int i = 0; i < 100; i++)
-  {
-    //  select sppropriate function
-    //  average += ACS.mA_AC_sampling();
-    average += input_current_sensor.mA_AC();
-  }
-  return average / 100000.0 - CALIBRATED_CONST;
-}
 
 void setup()
 {
   pinMode(PIN_BUTTON, INPUT_PULLUP);
-  // Serial.begin(115200);
+  Serial.begin(115200);
   // For debug mode
   pinMode(PIN_DEBUG, INPUT_PULLUP);
   disp1.init();
@@ -62,6 +45,8 @@ void setup()
     no_sd_card_handle(disp1, disp2);
 
   // Alocate objects dynamically
+  CurrentSensorAc *input_curret_sensor = new CurrentSensorAc(PIN_INPUT_CURRENT_SENSOR);
+  CurrentSensorDc *output_current_sensor = new CurrentSensorDc(PIN_OUTPUT_CURRENT_SENSOR);
   VoltageSensorAc *input_voltage_sensor = new VoltageSensorAc(PIN_INPUT_VOLTAGE_SENSOR);
   VoltageSensorDc *output_voltage_sensor = new VoltageSensorDc(PIN_OUTPUT_VOLTAGE_SENSOR);
 
@@ -98,23 +83,23 @@ void setup()
   disp1.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
   disp2.disp_custom(F("** INFORMASI **"), F("Collecting ..."));
 
-  // Capture data from sensors
-  data_input.current = get_current();
-  data_output.current = get_current();
-  // delay(1000);
+  // // Capture data from sensors
   data_input.volt = input_voltage_sensor->calculate();
   data_output.volt = output_voltage_sensor->calculate();
+  data_input.current = input_curret_sensor->calculate();
+  data_output.current = output_current_sensor->calculate();
 
   // Debug mode
   if (!debug_mode_state)
   {
     for (;;)
     {
+
       // Capture data from sensors
-      data_input.current = get_current();
-      data_output.current = get_current();
       data_input.volt = input_voltage_sensor->calculate();
       data_output.volt = output_voltage_sensor->calculate();
+      data_input.current = input_curret_sensor->calculate();
+      data_output.current = output_current_sensor->calculate();
 
       // Display to LCDs periodically
       disp1.disp_measurements(data_input.volt, data_input.current, 0, true);
@@ -124,12 +109,10 @@ void setup()
     }
   }
   // Dealocate memory used by objetcs
-  // delete input_voltage_sensor;
-  // delete output_voltage_sensor;
-  delay(50);
-  // Display captured data on LCDs
-  disp1.disp_measurements(data_input.volt, data_input.current, 0);
-  disp2.disp_measurements(data_output.volt, data_output.current, 1);
+  delete input_curret_sensor;
+  delete output_current_sensor;
+  delete input_voltage_sensor;
+  delete output_voltage_sensor;
 
   // Log captured data once to SD card.
   bool status_log = logger.log(data_input.volt, data_input.current, data_output.volt,
@@ -138,7 +121,11 @@ void setup()
   if (status_log == 1)
     log_failed_handle(disp1, disp2);
 
-  // stuck here
+  // Stuck here when logger failed
+
+  // Display captured data on LCDs
+  disp1.disp_measurements(data_input.volt, data_input.current, 0);
+  disp2.disp_measurements(data_output.volt, data_output.current, 1);
 }
 
 void loop()

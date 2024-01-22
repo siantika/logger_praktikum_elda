@@ -2,7 +2,11 @@
 #define CURRENT_SENSOR_H
 
 #include <Arduino.h>
-#include <ACS712.h>
+#include "ACS712.h"
+#define V_REF 5.0
+#define ACS712_5_V_REF 185 // see datahseet
+#define MAX_ADC 1024
+#define CALIBRATED_CONST_CURRENT 0.135 //  current only (input sensor)
 
 class CurrentSensor
 {
