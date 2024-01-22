@@ -46,7 +46,7 @@ float CurrentSensorDc::calculate()
 // private function
 float CurrentSensorDc::calculateCurrentDcOnce()
 {
-    float amps_pp = ((analogRead(this->_pin) / 1024.0 * 5.0) - V_OFFSET_ACS712) / ACS712_5_SENSITIVITY;
+    float amps_pp = ((analogRead(this->_pin) / 1024.0 * 5.0) - V_OFFSET_ACS712) / (ACS712_5_SENSITIVITY / 1000.0);
     return amps_pp / 2.0 * 0.707; // in RMS
 }
 
@@ -69,13 +69,15 @@ void CurrentSensorAc::calibrate()
 
 float CurrentSensorAc::calculate()
 {
-    float average = 0;
+    float total = 0;
     for (uint8_t i = 0; i < 100; i++)
     {
-        average += this->acs->mA_AC();
+        total += this->acs->mA_AC();
     }
+
     /* in Ampere unit*/
-    return (average / 100000.0) - CALIBRATED_CONST_CURRENT;
+    float average = total / 100000.0 - CALIBRATED_CONST_CURRENT; // convert to amps
+    return (average > AC_CURRENT_THRESHOLD ? average : 0.00);
 }
 
 CurrentSensorAc::~CurrentSensorAc()
