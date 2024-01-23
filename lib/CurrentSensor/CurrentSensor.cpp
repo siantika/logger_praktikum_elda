@@ -40,7 +40,7 @@ float CurrentSensorDc::calculate()
         }
     }
 
-    return (selected_amps > DC_CURRENT_THRESHOLD ? selected_amps : 0.00); // average and converts to amps
+    return (selected_amps > DC_CURRENT_THRESHOLD ? (selected_amps - 0.02) : 0.00); // average and converts to amps
 }
 
 // private function
@@ -76,7 +76,7 @@ float CurrentSensorAc::calculate()
     }
 
     /* in Ampere unit*/
-    float average = total / 100000.0 - CALIBRATED_CONST_CURRENT; // convert to amps
+    float average = total / 100000.0 + CALIBRATED_CONST_CURRENT; // convert to amps
     return (average > AC_CURRENT_THRESHOLD ? average : 0.00);
 }
 

@@ -7,9 +7,9 @@
 #define ACS712_5_SENSITIVITY 185 // see datahseet
 #define V_OFFSET_ACS712 2.5      // ACS_712 (in volt)
 #define MAX_ADC 1023
-#define CALIBRATED_CONST_CURRENT 0.135 //  current only (input sensor)
+#define CALIBRATED_CONST_CURRENT 0.00 //  current only (input sensor)
 #define DC_CURRENT_THRESHOLD 0.05      // self calibrated
-#define AC_CURRENT_THRESHOLD 0.02      // self calibrated
+#define AC_CURRENT_THRESHOLD 0.12      // self calibrated
 class CurrentSensor
 {
 protected:
