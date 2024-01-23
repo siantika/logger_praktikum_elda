@@ -44,6 +44,9 @@ void setup()
   if (status_sd_card == 1)
     no_sd_card_handle(disp1, disp2);
 
+  // make title
+  logger.init_title("sensor.txt");
+
   // Alocate objects dynamically
   CurrentSensorAc *input_curret_sensor = new CurrentSensorAc(PIN_INPUT_CURRENT_SENSOR);
   CurrentSensorDc *output_current_sensor = new CurrentSensorDc(PIN_OUTPUT_CURRENT_SENSOR);

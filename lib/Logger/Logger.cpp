@@ -17,7 +17,7 @@ String Logger::get_time()
 
 uint8_t Logger::init(uint8_t pin_cs)
 {
-    // returns 
+    // returns
     // operation status (bool) : 0 = Works || 1 = Error
     uint8_t opt = !SD.begin(pin_cs);
     return opt;
@@ -31,14 +31,6 @@ bool Logger::log(float &voltage_in, float &current_in,
     File dataFile = SD.open(file_name, FILE_WRITE);
     if (dataFile)
     {
-        dataFile.print(F("DATE,\t"));
-        dataFile.print(F("TIME,\t"));
-        dataFile.print(F("VOLTAGE IN(V),\t"));
-        dataFile.print(F("CURRENT IN(A),\t"));
-        dataFile.print(F("VOLTAGE OUT(V),\t"));
-        dataFile.println(F("CURRENT OUT(A),"));
-        dataFile.print(get_date());
-        dataFile.print(",\t");
         dataFile.print(get_time());
         dataFile.print(",\t");
         dataFile.print(String(voltage_in));
@@ -54,7 +46,27 @@ bool Logger::log(float &voltage_in, float &current_in,
     }
     else
     {
-        opt_success = 1;// error occured
+        opt_success = 1; // error occured
     }
     return opt_success;
+}
+
+void Logger::init_title(String file_name)
+{
+    if (SD.exists(file_name) == true)
+    {
+        return;
+    }
+
+    File dataFile = SD.open(file_name, FILE_WRITE);
+    if (dataFile)
+    {
+        dataFile.print("DATE:" + get_date() +"\n");
+        dataFile.print(F("TIME,\t"));
+        dataFile.print(F("VOLTAGE IN(V),\t"));
+        dataFile.print(F("CURRENT IN(A),\t"));
+        dataFile.print(F("VOLTAGE OUT(V),\t"));
+        dataFile.println(F("CURRENT OUT(A),"));
+        dataFile.close();
+    }
 }
