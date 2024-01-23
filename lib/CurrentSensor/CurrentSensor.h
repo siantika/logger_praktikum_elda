@@ -9,7 +9,7 @@
 #define MAX_ADC 1023
 #define CALIBRATED_CONST_CURRENT 0.00 //  current only (input sensor)
 #define DC_CURRENT_THRESHOLD 0.05      // self calibrated
-#define AC_CURRENT_THRESHOLD 0.12      // self calibrated
+#define AC_CURRENT_THRESHOLD 0.20      // self calibrated
 class CurrentSensor
 {
 protected:

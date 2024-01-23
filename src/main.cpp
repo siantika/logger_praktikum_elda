@@ -17,7 +17,6 @@
 void setup()
 {
   pinMode(PIN_BUTTON, INPUT_PULLUP);
-  Serial.begin(115200);
   // For debug mode
   pinMode(PIN_DEBUG, INPUT_PULLUP);
   disp1.init();
